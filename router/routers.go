@@ -7,9 +7,10 @@ import (
 	"github.com/dev-soubhagya/urlshortner/storage"
 )
 
-func Router(shortener *storage.Shortener) {
+func Routers(shortener *storage.Shortener) {
 	h := handlers.NewHandler(shortener)
 	// Define HTTP routes
 	http.HandleFunc("/shorten", h.ShortenURL)
 	http.HandleFunc("/", h.Redirect)
+	http.HandleFunc("/metrics", h.Metrics)
 }

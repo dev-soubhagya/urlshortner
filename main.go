@@ -20,7 +20,7 @@ func init() {
 func main() {
 	fmt.Println("App running")
 	shortener := storage.NewShortener(os.Getenv("REDIS_ADDRESS"))
-	router.Router(shortener)
+	router.Routers(shortener)
 	log.Println("Server listening on port 8080...")
 	http.ListenAndServe(":"+os.Getenv("SERVER_PORT"), nil)
 }
