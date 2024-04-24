@@ -8,6 +8,7 @@ import (
 	"github.com/dev-soubhagya/urlshortner/helpers"
 	"github.com/dev-soubhagya/urlshortner/storage"
 	"github.com/dev-soubhagya/urlshortner/utils"
+	"github.com/gomodule/redigo/redis"
 )
 
 type Handler struct {
@@ -45,4 +46,26 @@ func (h *Handler) ShortenURL(w http.ResponseWriter, r *http.Request) {
 		}
 	}
 	json.NewEncoder(w).Encode(map[string]string{"shortened_url": shortURL})
+}
+
+func (h *Handler) Redirect(w http.ResponseWriter, r *http.Request) {
+	geturlcode := r.URL.Path
+	geturlcode = geturlcode[1:]
+	fmt.Println("short url to redirect", geturlcode)
+
+	shortURL := helpers.CodetoUrl(geturlcode)
+
+	// Retrieve original URL from Redis
+	originalURL, err := h.Shortener.Get(shortURL)
+	fmt.Println("original url from redis ", originalURL)
+	if err == redis.ErrNil {
+		fmt.Println("not found", err)
+		http.NotFound(w, r)
+		return
+	} else if err != nil {
+		http.Error(w, err.Error(), http.StatusInternalServerError)
+		return
+	}
+
+	http.Redirect(w, r, originalURL, http.StatusMovedPermanently)
 }

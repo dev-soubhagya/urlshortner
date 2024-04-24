@@ -11,4 +11,5 @@ func Router(shortener *storage.Shortener) {
 	h := handlers.NewHandler(shortener)
 	// Define HTTP routes
 	http.HandleFunc("/shorten", h.ShortenURL)
+	http.HandleFunc("/", h.Redirect)
 }
