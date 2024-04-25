@@ -20,7 +20,13 @@ func NewShortener(redisAddr string) *Shortener {
 			MaxIdle:     3,
 			IdleTimeout: 240 * time.Second,
 			Dial: func() (redis.Conn, error) {
-				return redis.Dial("tcp", redisAddr)
+				conn, err := redis.Dial("tcp", redisAddr)
+				if err != nil {
+					fmt.Println("redis init dial err :", err)
+					return nil, err
+				} else {
+					return conn, err
+				}
 			},
 		},
 	}

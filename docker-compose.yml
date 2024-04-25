@@ -1,0 +1,17 @@
+version: '3'
+services:
+  app:
+    build: 
+      context: ./app
+      dockerfile: Dockerfile
+    image: urlshortner:latest  # Specify custom image name here
+    ports:  
+      - "8080:8080"
+    depends_on:
+      - redis
+    environment:
+      REDIS_ADDRESS: redis:6379
+  redis:
+    build:
+      context: ./redis
+      dockerfile: Dockerfile
